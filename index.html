@@ -167,7 +167,7 @@
 <body>
 
 	<h1 id="title">Louisville Rightsizing Projects<br>
-    4/26/2024
+    4/26/2024 Meeting
     </h1>
 
 	<div id='map'></div>
@@ -256,14 +256,46 @@
             animate: false
         });
 
+		// defnie common styles used across crashes data
+		var commonStyles = {
+			weight: 1,
+			stroke: 1,
+			fillOpacity: 1
+		};
+
         // define the crashes and symbolize by KABCO
         var crashKABCO = {
-            kCrash: { source: "K", color: "#f5160a" },
-            aCrash: { source: "A", color: "#f59f0a" },
-            bCrash: { source: "B", color: "#e5f50a" },
-            cCrash: { source: "C", color: "#0a6cf5" },
-            oCrash: { source: "O", color: "#c0c5cc" },
+            kCrash: { source: "K", color: "#f5160a", radius: 12 },
+            aCrash: { source: "A", color: "#f59f0a", radius: 10 },
+            bCrash: { source: "B", color: "#e5f50a", radius: 8 },
+            cCrash: { source: "C", color: "#0a6cf5", radius: 6 },
+            oCrash: { source: "O", color: "#c0c5cc", radius: 4 },
         }
+
+		// define empty GeoJSON variable
+		// Looping through crash data will store each KABCO type as a separate object in the geoJsonLayers object
+		var geoJsonLayers = {};
+
+		// Lets loop through the crash data
+		for (var layer in crashKABCO) {
+			geoJsonLayers[layer] = L.geoJson(crashes, {
+				pointToLayer: function (feature, latlng) {
+					return L.circleMarker(latlng, commonStyles);
+				},
+				filter: function (feature) {
+					if (feature.properties.KABCO[crashKABCO[layer].source]) {
+						return feature;
+					}
+				},
+				style: function (feature) {
+					return {
+						color: crashKABCO[layer].color,
+						fillColor: crashKABCO[layer].color,
+						radius: crashKABCO[layer].radius
+					};
+				},
+			}).addTo(map);
+		}
 
 
         // Get page elements
