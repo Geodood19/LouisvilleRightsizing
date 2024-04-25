@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset=utf-8 />
-	<title>Lab 06 JFLT</title>
+	<title>Louisville Rightsizing Projects - Meeting Map</title>
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 	<link rel='icon' href='https://newmapsplus.github.io/favicon.ico' type='image/x-icon' />
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -31,7 +31,7 @@
 			padding: 0;
 			font-family: 'Quicksand', sans-serif;
 			font-size: 100%;
-			color: #3d3d3d;
+			color: #fffcfc;
 		}
 
 		h1 {
@@ -46,7 +46,7 @@
 			padding: 10px 15px;
 			/* Add styles to match Leaflet UI elements */
 			background: rgba(256, 256, 256, .3);
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+			box-shadow: 0 1px 3px rgba(245, 245, 245, 0.4);
 			border: 1px solid #ddd;
 			border-radius: 5px;
 			z-index: 800;
@@ -147,7 +147,7 @@
 			#about h2 {
 				font-size: 1em;
 			}
-            
+
 			.leaflet-popup-content {
 				font-family: 'Quicksand', sans-serif;
 				font-size: 0.9em;
@@ -166,7 +166,9 @@
 
 <body>
 
-	<h1 id="title">A Typical Weekday!</h1>
+	<h1 id="title">Louisville Rightsizing Projects<br>
+    4/26/2024
+    </h1>
 
 	<div id='map'></div>
 
@@ -174,10 +176,9 @@
 
 	<section id="about">
 		<h2>About this</h2>
-			<p>This is a typical, mundane work week in the life of James Thompson! My commutes to work start in Mount Sterling, where I live, and end at Palmer Engineering Company, 
-				where I am a GIS Analyst. After work, if I do not return home immediately, I enjoy going to Legacy Grove Park for a walk/run, teaching judo at Fifth Element BJJ, 
-			or stuffing my face with the best pizza ever from La Trattoria. The last of these I have enjoyed a little too often lately!</p>
-			<p>Map authored by me, James FL Thompson</p>
+			<p>Louisville Rightsizing Projects<br>
+            KABCO Crashes along Project Corridors</p>
+			<p>Map author: James FL Thompson, GIS Analyst (PEC)</p>
 	</section>
 	<!-- Add Leaflet JS library. Check to make sure it is latest version. -->
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -185,12 +186,15 @@
 	<!-- Load a Leaflet plugin to provide geolocation. Load this after Leaflet JS.-->
 	<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.72.2/src/L.Control.Locate.min.js" ></script>
 
-	<!-- Load custom route -->
-	<script src="data/route-jflt.js"></script> <!-- edited target route data from original -->>
+	<!-- Load js data -->
+	<script src="data/Crashes.js"></script> <!-- edited target route data from original -->>
+    <script src="data/corridors.js"></script>
+    <script src="data/key.js"></script>
+
 	
 	<script>
 		var options = {
-			center: [38.038685, -84.504164],
+			center: [38.038685, -86],
 			zoom: 12,
 			zoomControl: false
 		}
@@ -213,7 +217,7 @@
 		L.control.locate(locate_options).addTo(map);
 
 		// Get basemap URL from Leaflet Providers
-		var basemap_url = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+		var basemap_url = "http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
 
 		// Get basemap attributes from Leaflet Providers
 		var basemap_attributes = {
@@ -226,7 +230,9 @@
 
 		map.addLayer(tiles);
 
-		var myRoute = L.geoJson(routeData, {
+        // define the geojson routes
+        // should be rightsizing projects   
+		var corridors = L.geoJson(routes, {
 			filter: function (feature) {
 				if (feature.geometry.type == "LineString") {
 				return feature;
@@ -234,29 +240,53 @@
 			},
 			style: function (feature) {
 				return {
-				color: "#5453fb",
+				color: "#ffffff",
 				weight: 4,
-				opacity: 0.70,
+				opacity: 0.9,
 				dashArray: "5, 5",
 				};
 			},
 		}).addTo(map);
 
-		myRoute.eachLayer(function (layer) {
-			layer.on('mouseover', function (e) {
-				e.target.setStyle({
-					color: 'yellow',
-					opacity: 1,
-				});
-			});
-			layer.on('mouseout', function (e) {
-				// This resets all layers in myRoute to the original style
-				myRoute.resetStyle();
-			});
+        // fit the bounds of the corridors
+        map.fitBounds(corridors.getBounds(), {
+            padding: [50,50],
+            animate: false
+        }).panBy([-100, 0], {
+            animate: false
+        });
+
+        // define the crashes and symbolize by KABCO
+        var crashKABCO = {
+            kCrash: { source: "K", color: "#f5160a" },
+            aCrash: { source: "A", color: "#f59f0a" },
+            bCrash: { source: "B", color: "#e5f50a" },
+            cCrash: { source: "C", color: "#0a6cf5" },
+            oCrash: { source: "O", color: "#c0c5cc" },
+        }
+
+
+        // Get page elements
+        const button = document.querySelector('#toggle');
+		const about = document.querySelector('#about');
+		const title = document.querySelector('#title');
+
+        // Add event listener to button
+        // Toggles on/off HTML elements
+		button.addEventListener('click', function () {
+			// Toggle a map layer
+			// if (map.hasLayer(myStops)) {
+			// 	map.removeLayer(myStops);
+			// } else {
+			// 	map.addLayer(myStops);
+			// }
+			// Toggle the hide class on page elements
+			title.classList.toggle('hide');
+			about.classList.toggle('hide');
+			// Change button text
+			button.innerHTML = button.innerHTML === 'Hide' ? 'Show' : 'Hide';
 		});
-
-
-		
+	
 		
 	</script>
 
