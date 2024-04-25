@@ -222,6 +222,19 @@
 
 		map.addLayer(tiles);
 
+		// define key symbols
+		var keySymbols = L.geoJson(key, {
+			style: function (feature) {
+				return {
+					color: "blue",
+					weight: 1,
+					fillColor: "blue",
+					fillOpacity: 1,
+				};
+			}
+		}).addTo(map);
+
+
 		// define the geojson routes
 		// should be rightsizing projects   
 		var corridors = L.geoJson(routes, {
@@ -239,6 +252,7 @@
 				};
 			},
 		}).addTo(map);
+
 
 		// fit the bounds of the corridors
 		map.fitBounds(corridors.getBounds(), {
