@@ -10,21 +10,13 @@
 	<!-- Add Leaflet CSS library. Check to make sure it is latest version. -->
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 		integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-	<link
-	rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-	/>
-	<link
-	rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.72.0/L.Control.Locate.css"
-	integrity="sha512-oA/Bm/ylO3xoKtPSYmEAaIqI7OeW3caUl5RSx1sTrNEUQ83gZYrie3V3TnEI4UkYdzkAKjiQ22dJ3wf6K6encg=="
-	crossorigin="anonymous"
-	/>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.72.0/L.Control.Locate.css"
+		integrity="sha512-oA/Bm/ylO3xoKtPSYmEAaIqI7OeW3caUl5RSx1sTrNEUQ83gZYrie3V3TnEI4UkYdzkAKjiQ22dJ3wf6K6encg=="
+		crossorigin="anonymous" />
 
-	<link
-	href="https://fonts.googleapis.com/css?family=Quicksand:400,700"
-	rel="stylesheet"
-	/>
+	<link href="https://fonts.googleapis.com/css?family=Quicksand:400,700" rel="stylesheet" />
 	<style>
 		body {
 			margin: 0;
@@ -167,8 +159,8 @@
 <body>
 
 	<h1 id="title">Louisville Rightsizing Projects<br>
-    4/26/2024 Meeting
-    </h1>
+		4/26/2024 Meeting
+	</h1>
 
 	<div id='map'></div>
 
@@ -176,22 +168,22 @@
 
 	<section id="about">
 		<h2>About this</h2>
-			<p>Louisville Rightsizing Projects<br>
-            KABCO Crashes along Project Corridors</p>
-			<p>Map author: James FL Thompson, GIS Analyst (PEC)</p>
+		<p>Louisville Rightsizing Projects<br>
+			KABCO Crashes along Project Corridors</p>
+		<p>Map author: James FL Thompson, GIS Analyst (PEC)</p>
 	</section>
 	<!-- Add Leaflet JS library. Check to make sure it is latest version. -->
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 		integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 	<!-- Load a Leaflet plugin to provide geolocation. Load this after Leaflet JS.-->
-	<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.72.2/src/L.Control.Locate.min.js" ></script>
+	<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.72.2/src/L.Control.Locate.min.js"></script>
 
 	<!-- Load js data -->
 	<script src="data/Crashes.js"></script>
-    <script src="data/corridors.js"></script>
-    <script src="data/key.js"></script>
+	<script src="data/corridors.js"></script>
+	<script src="data/key.js"></script>
 
-	
+
 	<script>
 		var options = {
 			center: [38.038685, -86],
@@ -223,38 +215,38 @@
 		var basemap_attributes = {
 			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
 			subdomains: 'abcd',
-			maxZoom: 21	
+			maxZoom: 21
 		};
 		// requests some map tiles
 		var tiles = L.tileLayer(basemap_url, basemap_attributes);
 
 		map.addLayer(tiles);
 
-        // define the geojson routes
-        // should be rightsizing projects   
+		// define the geojson routes
+		// should be rightsizing projects   
 		var corridors = L.geoJson(routes, {
 			filter: function (feature) {
 				if (feature.geometry.type == "LineString") {
-				return feature;
+					return feature;
 				}
 			},
 			style: function (feature) {
 				return {
-				color: "#ffffff",
-				weight: 4,
-				opacity: 0.9,
-				dashArray: "5, 5",
+					color: "#ffffff",
+					weight: 4,
+					opacity: 0.9,
+					dashArray: "5, 5",
 				};
 			},
 		}).addTo(map);
 
-        // fit the bounds of the corridors
-        map.fitBounds(corridors.getBounds(), {
-            padding: [50,50],
-            animate: false
-        }).panBy([-100, 0], {
-            animate: false
-        });
+		// fit the bounds of the corridors
+		map.fitBounds(corridors.getBounds(), {
+			padding: [50, 50],
+			animate: false
+		}).panBy([-100, 0], {
+			animate: false
+		});
 
 		// defnie common styles used across crashes data
 		var commonStyles = {
@@ -263,14 +255,14 @@
 			fillOpacity: 1
 		};
 
-        // define the crashes and symbolize by KABCO
-        var crashKABCO = {
-            kCrash: { source: "K", color: "#f5160a", radius: 12 },
-            aCrash: { source: "A", color: "#f59f0a", radius: 10 },
-            bCrash: { source: "B", color: "#e5f50a", radius: 8 },
-            cCrash: { source: "C", color: "#0a6cf5", radius: 6 },
-            oCrash: { source: "O", color: "#c0c5cc", radius: 4 },
-        }
+		// define the crashes and symbolize by KABCO
+		var crashKABCO = {
+			kCrash: { source: "K", color: "#f5160a", radius: 12 },
+			aCrash: { source: "A", color: "#f59f0a", radius: 10 },
+			bCrash: { source: "B", color: "#e5f50a", radius: 8 },
+			cCrash: { source: "C", color: "#0a6cf5", radius: 6 },
+			oCrash: { source: "O", color: "#c0c5cc", radius: 4 },
+		}
 
 		// define empty GeoJSON variable
 		// Looping through crash data will store each KABCO type as a separate object in the geoJsonLayers object
@@ -287,6 +279,10 @@
 						return feature;
 					}
 				},
+				onEachFeature: function (feature, layer) {
+					content += `MFN: ${layer.features.properties.MasterFile}`
+					layer.bindToolTip(content);
+				},
 				style: function (feature) {
 					return {
 						color: crashKABCO[layer].color,
@@ -298,13 +294,13 @@
 		}
 
 
-        // Get page elements
-        const button = document.querySelector('#toggle');
+		// Get page elements
+		const button = document.querySelector('#toggle');
 		const about = document.querySelector('#about');
 		const title = document.querySelector('#title');
 
-        // Add event listener to button
-        // Toggles on/off HTML elements
+		// Add event listener to button
+		// Toggles on/off HTML elements
 		button.addEventListener('click', function () {
 			// Toggle the hide class on page elements
 			title.classList.toggle('hide');
@@ -312,8 +308,8 @@
 			// Change button text
 			button.innerHTML = button.innerHTML === 'Hide' ? 'Show' : 'Hide';
 		});
-	
-		
+
+
 	</script>
 
 </body>
