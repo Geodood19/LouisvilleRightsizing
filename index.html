@@ -279,10 +279,6 @@
 						return feature;
 					}
 				},
-				onEachFeature: function (feature, layer) {
-					content += `MFN: ${layer.features.properties.MasterFile}`
-					layer.bindToolTip(content);
-				},
 				style: function (feature) {
 					return {
 						color: crashKABCO[layer].color,
@@ -290,6 +286,10 @@
 						radius: crashKABCO[layer].radius
 					};
 				},
+				onEachFeature: function (feature, layer) {
+					content += `MFN: ${layer.features.properties.MasterFile}`
+					layer.bindToolTip(content);
+				}
 			}).addTo(map);
 		}
 
