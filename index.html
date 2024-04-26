@@ -211,7 +211,7 @@
 		var basemap_attributes = {
 			attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
 			subdomains: 'abcd',
-			maxZoom: 21
+			maxZoom: 19
 		};
 		// requests some map tiles
 		var tiles = L.tileLayer(basemap_url, basemap_attributes);
@@ -267,7 +267,7 @@
 		};
 
 		// define the crashes and symbolize by KABCO
-		var crashKABCO = {
+		var crashKabco = {
 			kCrash: { source: "K", color: "#f5160a", radius: 12 },
 			aCrash: { source: "A", color: "#f59f0a", radius: 10 },
 			bCrash: { source: "B", color: "#e5f50a", radius: 8 },
@@ -279,8 +279,12 @@
 		// Looping through crash data will store each KABCO type as a separate object in the geoJsonLayers object
 		var geoJsonLayers = {};
 
+		// L.geoJson(crashes).addTo(map);
+
+		// L.bindTooltip(crahes)
+
 		// Lets loop through the crash data
-		for (var layer in crashKABCO) {
+		for (var layer in crashKabco) {
 			geoJsonLayers[layer] = L.geoJson(crashes, {
 				pointToLayer: function (feature, latlng) {
 					// Test if the code even reaches this point
@@ -288,20 +292,20 @@
 					return L.circleMarker(latlng, commonStyles);
 				},
 				filter: function (feature) {
-					if (feature.properties.KABCO[crashKABCO[layer].source]) {
+					if (feature.properties.KABCO[crashKabco[layer].source]) {
 						return feature;
 					}
 				},
 				style: function (feature) {
 					return {
-						color: crashKABCO[layer].color,
-						fillColor: crashKABCO[layer].color,
-						radius: crashKABCO[layer].radius
+						color: crashKabco[layer].color,
+						fillColor: crashKabco[layer].color,
+						radius: crashKabco[layer].radius
 					};
 				},
 				onEachFeature: function (feature, layer) {
-					content += `MFN: ${features.properties[MasterFile]}`;
-					layer.bindToolTip(content);
+					content += `MFN: ${feature.properties.MasterFile[crashKabco[layer].source]}`;
+					layer.bindTooltip(content);
 				}
 			}).addTo(map);
 		}
