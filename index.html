@@ -283,6 +283,7 @@
 		for (var layer in crashKABCO) {
 			geoJsonLayers[layer] = L.geoJson(crashes, {
 				pointToLayer: function (feature, latlng) {
+					// Test if the code even reaches this point
 					console.log(feature);
 					return L.circleMarker(latlng, commonStyles);
 				},
